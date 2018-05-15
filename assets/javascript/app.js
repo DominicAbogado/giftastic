@@ -1,12 +1,13 @@
 $(document).ready(function () {
 
     var shows = ["Scrubs", "Gossip Girl", "Brooklyn Nine Nine"];
+    var limit= 10;
 
     function displayGifs() {
         $('.gifsAppearHere').empty()
         var show = $(this).attr("data-name");
         var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-            show + "&api_key=dc6zaTOxFJmzC&limit=10";
+            show + "&api_key=dc6zaTOxFJmzC&limit=" + limit;
 
         // Creates AJAX call for the specific button being clicked
         $.ajax({
@@ -59,6 +60,14 @@ $(document).ready(function () {
         // Calling renderButtons which handles the processing of our movie array
         renderButtons();
     });
+
+    $("#add-show").on("click", function (event) {
+        event.preventDefault();
+        parseInt($('#request-input'))
+        limit = $('#request-input').val()
+        displayGifs()
+    });
+
 
     // Adding click event listeners to all elements with a class of "movie"
     $(document).on("click", ".show", displayGifs);
