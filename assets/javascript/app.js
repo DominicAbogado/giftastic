@@ -1,78 +1,96 @@
-$(document).ready(function () {
+$(document).ready(function() {
+  var shows = ["Scrubs", "Gossip Girl", "Brooklyn Nine Nine"];
+  var limit = 10;
 
-    var shows = ["Scrubs", "Gossip Girl", "Brooklyn Nine Nine"];
-    var limit= 10;
+  $("#numGifs").append("Current Number of Gifs: " + limit);
 
-    function displayGifs() {
-        $('.gifsAppearHere').empty()
-        var show = $(this).attr("data-name");
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-            show + "&api_key=dc6zaTOxFJmzC&limit=" + limit;
+  function displayGifs() {
+    $(".gifsAppearHere").empty();
+    var show = $(this).attr("data-name");
+    var queryURL =
+      "https://api.giphy.com/v1/gifs/search?q=" +
+      show +
+      "&api_key=dc6zaTOxFJmzC&limit=" +
+      limit;
 
-        // Creates AJAX call for the specific button being clicked
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function (response) {
-            var results = response.data;
+    // Creates AJAX call for the specific button being clicked
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function(response) {
+      var results = response.data;
 
-            for (var i = 0; i < results.length; i++) {
-                var gifDiv = $('<div class="myGifs">');
+      for (var i = 0; i < results.length; i++) {
+        var gifDiv = $('<div class="myGifs">');
 
-                var rating = results[i].rating;
+        var rating = results[i].rating;
 
-                var rat = $('<div class="rating">').text("Rating: " + rating);
+        var rat = $('<div class="rating">').text("Rating: " + rating);
 
-                var gifImage = $("<img>");
-                gifImage.attr("src", results[i].images.fixed_height.url);
+        var gifImage = $("<img>");
+        gifImage.attr("src", results[i].images.fixed_height.url);
 
-                gifDiv.append(gifImage);
-                gifDiv.append(rat);
+        gifDiv.append(gifImage);
+        gifDiv.append(rat);
 
-                $(".gifsAppearHere").append(gifDiv);
-                console.log(results[i].images.fixed_height.url)
-            }
-        });
-    }
-    
-
-    // Function for displaying movie data
-    function renderButtons() {
-        $("#buttons-view").empty();
-        for (var i = 0; i < shows.length; i++) {
-            var a = $("<button>");
-            a.addClass("show");
-            a.attr("data-name", shows[i]);
-            a.text(shows[i]);
-            $("#buttons-view").append(a);
-        }
-    }
-
-    // This function handles events where the add movie button is clicked
-    $("#add-show").on("click", function (event) {
-        event.preventDefault();
-        // This line of code will grab the input from the textbox
-        var show = $("#show-input").val().trim();
-
-        // The movie from the textbox is then added to our array
-        shows.push(show);
-
-        // Calling renderButtons which handles the processing of our movie array
-        renderButtons();
+        $(".gifsAppearHere").append(gifDiv);
+        console.log(results[i].images.fixed_height.url);
+      }
     });
+  }
 
-    $("#add-show").on("click", function (event) {
-        event.preventDefault();
-        parseInt($('#request-input'))
-        limit = $('#request-input').val()
-        displayGifs()
-    });
+  // Function for displaying movie data
+  function renderButtons() {
+    $("#buttons-view").empty();
+    for (var i = 0; i < shows.length; i++) {
+      var a = $("<button>");
+      a.addClass("show");
+      a.attr("data-name", shows[i]);
+      a.text(shows[i]);
+      $("#buttons-view").append(a);
+    }
+  }
 
+  // This function handles events where the add movie button is clicked
+  $("#add-show").on("click", function(event) {
+    event.preventDefault();
+    // This line of code will grab the input from the textbox
+    var show = $("#show-input")
+      .val()
+      .trim();
 
-    // Adding click event listeners to all elements with a class of "movie"
-    $(document).on("click", ".show", displayGifs);
+    // The movie from the textbox is then added to our array
+    shows.push(show);
 
-    // Calling the renderButtons function to display the intial buttons
+    // Calling renderButtons which handles the processing of our movie array
     renderButtons();
+  });
 
+  //Changing the limit of gifs
+  $("#add-request").on("click", function(event) {
+    event.preventDefault();
+    // This line of code will grab the input from the textbox
+    limit = parseInt($("#request-input").val());
+
+    if (isNaN(limit) == true) {
+      alert("Oh wow, that's a number now??");
+
+    } else {
+      $("#numGifs").empty();
+      $("#numGifs").append("Current Number of Gifs: " + limit);
+    }
+  });
+
+  // $("#add-show").on("click", function (event) {
+  //     event.preventDefault();
+  //     parseInt($('#request-input'))
+  //     limit = $('#request-input').val()
+  //     displayGifs()
+  // });
+
+  // Adding click event listeners to all elements with a class of "movie"
+  $(document).on("click", ".show", displayGifs);
+
+  // Calling the renderButtons function to display the intial buttons
+  renderButtons();
 });
